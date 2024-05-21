@@ -1,0 +1,20 @@
+{
+  "name": "snippy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "bin": {
+    "snippy": "./app.js"
+  },
+  "scripts": {
+    "start": "node creator.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "clipboardy": "^4.0.0",
+    "commander": "^12.1.0",
+    "inquirer": "^9.2.22"
+  }
+}
