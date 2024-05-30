@@ -9,8 +9,12 @@ const @:name:proxy:@ = new Proxy(@:name:object:@, {
 		return target[property];
 	},
 
-	set: function (target, property, value) {
+	set: function (target, property, value, receiver) {
 		// default behavior
-		target[property] = value;
+		Reflect.set(target, property, value, receiver);
+	},
+
+	deleteProperty: function(target, property) {
+		return Reflect.deleteProperty(target, property);
 	}
 });

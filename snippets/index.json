@@ -66,5 +66,45 @@
   {
     "language": "umbraco",
     "name": "notification-handler"
+  },
+  {
+    "language": "js",
+    "name": "deep-watch"
+  },
+  {
+    "language": "js",
+    "name": "versioned-localstorage"
+  },
+  {
+    "language": "js",
+    "name": "memoize"
+  },
+  {
+    "language": "js",
+    "name": "simple-cache"
+  },
+  {
+    "language": "powershell",
+    "name": "umbraco-setup"
+  },
+  {
+    "language": "js-component",
+    "name": "accordion"
+  },
+  {
+    "language": "js-component",
+    "name": "menu"
+  },
+  {
+    "language": "css",
+    "name": "wavey-right"
+  },
+  {
+    "language": "css",
+    "name": "grid-background"
+  },
+  {
+    "language": "js",
+    "name": "simple-reactive-component"
   }
 ]

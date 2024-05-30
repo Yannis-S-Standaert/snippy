@@ -3,6 +3,13 @@ import { Command } from 'commander';
 import fs from 'fs';
 import inquirer from 'inquirer';
 import clipboardy from 'clipboardy';
+import path from 'path';
+import { exec } from 'child_process';
+// path fo this tool
+const __dirname = path.dirname(new URL(import.meta.url).pathname).substring(1);
+// path of the snippets folder
+const snippetsPath = path.join(__dirname, 'snippets');
+console.log(snippetsPath, __dirname);
 
 /* CLI logic */
 
@@ -103,14 +110,14 @@ ${params.map((param) => param).join(',')}
 ${code}
 `;
 
-    if (!fs.existsSync('./snippets')) {
-        fs.mkdirSync('./snippets');
+    if (!fs.existsSync(snippetsPath)) {
+        fs.mkdirSync(snippetsPath);
     }
-    if (!fs.existsSync(`./snippets/${folder}`)) {
-        fs.mkdirSync(`./snippets/${folder}`);
+    if (!fs.existsSync(`${snippetsPath}/${folder}`)) {
+        fs.mkdirSync(`${snippetsPath}/${folder}`);
     }
 
-    fs.writeFile(`./snippets/${folder}/${name}.md`, content, (err) => {
+    fs.writeFile(`${snippetsPath}/${folder}/${name}.md`, content, (err) => {
         if (err) {
             callback(err);
         } else {
@@ -121,8 +128,9 @@ ${code}
 }
 
 function listSnippets(language) {
-    fs.readdir(`./snippets/${language}`, (err, files) => {
+    fs.readdir(`${snippetsPath}/${language}`, (err, files) => {
         if (err) {
+            console.log(err);
         } else {
             const snippets = files.map(file => file.replace('.md', ''));
             console.log('\t' + snippets.join('\t\n'));
@@ -130,9 +138,8 @@ function listSnippets(language) {
     });
 }
 
-
 function readSnippet(language, name, callback) {
-    fs.readFile(`./snippets/${language}/${name}.md`, 'utf8', (err, data) => {
+    fs.readFile(`${snippetsPath}/${language}/${name}.md`, 'utf8', (err, data) => {
         if (err) {
             callback(err);
         } else {
@@ -155,7 +162,7 @@ function readSnippet(language, name, callback) {
     });
 }
 
-const indexFilePath = './snippets/index.json';
+const indexFilePath = snippetsPath + '/index.json';
 
 function readIndex(callback) {
     fs.readFile(indexFilePath, 'utf8', (err, data) => {
@@ -211,8 +218,8 @@ function updateIndex(language, name, callback) {
 
 function syncWithGit() {
     // Sync with git
-    const { exec } = require('child_process');
-    let commitName = new Date().toISoString() + '-snippy-sync';
+    
+    let commitName = new Date().toISOString() + '-snippy-sync';
     exec(`git add . && git commit -m "${commitName}" && git push`, (err, stdout, stderr) => {
         if (err) {
             console.log(err);
@@ -226,10 +233,6 @@ function syncWithGit() {
 
 const paramRegex = /@:(\w+):(.*?):@/g;
 
-/*
- * Extract unique parameters from the template.
- * Returns an array of objects { type, name }.
- */
 function extractParameters(template) {
   const params = new Map();
 
@@ -245,11 +248,6 @@ function extractParameters(template) {
   return Array.from(params.values());
 }
 
-/*
- * Replace parameters in the template with provided replacement values.
- * replacementValues should be an object:
- * { paramName: replacementValue }
- */
 function replaceParameters(template, replacementValues) {
     return template.replace(paramRegex, (match, type, paramName) => {
         if (type === 'name') {
